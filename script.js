@@ -1,3 +1,7 @@
+const results = document.querySelector(".results");
+const compScore = document.querySelector(".compScore");
+const yourScore = document.querySelector(".yourScore");
+
 function getComputerChoice() {
 
     const choice = Math.round(Math.random() * 1e2) / 1e2;
@@ -72,37 +76,58 @@ function playRound(humanChoice, computerChoice) {
         }
     }
 
+    const resultText = document.createElement("p");
+
     switch (result) {
         case 'won':
+            resultText.textContent = `You win! ${humanChoice} beats ${computerChoice}`;
             console.log(`You win! ${humanChoice} beats ${computerChoice}`);
             humanScore++;
+            yourScore.innerHTML = `You: ${humanScore}`;
             break;
         case 'lost':
+            resultText.textContent = `You lose! ${computerChoice} beats ${humanChoice}`;
             console.log(`You lose! ${computerChoice} beats ${humanChoice}`);
             computerScore++;
+            compScore.innerHTML = `Computer: ${computerScore}`;
             break;
         case 'tied':
+            resultText.textContent = `You tie! ${computerChoice} ties ${humanChoice}`;
             console.log(`You tie! ${computerChoice} ties ${humanChoice}`);
             break;
 
     }
+
+    results.appendChild(resultText);
+
+    if (humanScore === 5) {
+        const wonText = document.createElement("p");
+        wonText.textContent = `You have 5 points and therefore won the game!`;
+        results.appendChild(wonText);
+    }
+
+    if (computerScore === 5) {
+        const wonText = document.createElement("p");
+        wonText.textContent = `The computer has 5 points and therefore won the game!`;
+        results.appendChild(wonText);
+    }
+
 }
 
-function playGame() {
+const buttons = document.querySelector(".wrapper");
 
-    for (let i = 0; i < 5; i++) {
-        playRound(getHumanChoice(), getComputerChoice());
+buttons.addEventListener("click", event => {
+    const isButton = event.target.nodeName === 'BUTTON';
+    if (!isButton) return;
+    switch (event.target.className) {
+        case 'rock':
+            playRound('rock', getComputerChoice());
+            break;
+        case 'paper':
+            playRound('paper', getComputerChoice());
+            break;
+        case 'scissors':
+            playRound('scissors', getComputerChoice());
+            break;
     }
-
-    if (humanScore > computerScore) {
-        console.log(`You beat the computer ${humanScore} to ${computerScore}!`);
-    }
-    else if (humanScore < computerScore) {
-        console.log(`The computer beat you ${computerScore} to ${humanScore}`);
-    }
-    else {
-        console.log(`You tied the computer ${humanScore} to ${computerScore}`);
-    }
-}
-
-playGame();
+});
